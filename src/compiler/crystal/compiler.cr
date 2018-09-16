@@ -408,7 +408,7 @@ module Crystal
               pr.each_line do |line|
                 unit = JSON.parse(line)
                 reused << unit["name"].as_s if unit["reused"].as_bool
-                @progress_tracker.stage_progress += 1
+                @progress_tracker.increment_stage_progress
               end
             end
           end
