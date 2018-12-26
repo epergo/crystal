@@ -17,6 +17,8 @@ module Crystal
 
   class Type
     def lookup_matches(signature, owner = self, path_lookup = self, matches_array = nil)
+      # puts "Type#lookup_matches"
+      # puts "#{signature}, #{owner}, #{path_lookup}, #{matches_array}"
       matches = lookup_matches_without_parents(signature, owner, path_lookup, matches_array)
       return matches if matches.cover_all?
 
@@ -51,6 +53,9 @@ module Crystal
     end
 
     def lookup_matches_without_parents(signature, owner = self, path_lookup = self, matches_array = nil)
+      # puts "lookup_matches_without_parents"
+      # flag = owner.to_s == "Typewriter::Person"
+      # puts self.defs if flag
       if defs = self.defs.try &.[signature.name]?
         context = MatchContext.new(owner, path_lookup)
 
@@ -65,6 +70,7 @@ module Crystal
           context.defining_type = macro_owner if macro_owner
           context.def_free_vars = item.def.free_vars
 
+          # puts item.def # if flag
           match = signature.match(item, context)
 
           if match
@@ -193,7 +199,9 @@ module Crystal
           next
         end
 
+        # puts "----- Print arg #{arg} of type #{arg.class}" if signature.name == "my_method"
         match_arg_type = arg_type.restrict(arg, context)
+        # puts match_arg_type
         if match_arg_type
           matched_arg_types ||= [] of Type
           matched_arg_types.push match_arg_type

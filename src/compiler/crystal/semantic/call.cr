@@ -239,6 +239,7 @@ class Crystal::Call
 
   def lookup_matches_in_type(owner, arg_types, named_args_types, self_type, def_name, search_in_parents, search_in_toplevel = true, with_literals = false)
     signature = CallSignature.new(def_name, arg_types, block, named_args_types)
+    # puts "#{owner}, #{arg_types}, #{named_args_types}, #{self_type}, #{def_name}, #{search_in_parents}, #{search_in_toplevel}, #{with_literals}, #{signature}"
 
     matches = check_tuple_indexer(owner, def_name, args, arg_types)
     matches ||= lookup_matches_checking_expansion(owner, signature, search_in_parents)
@@ -288,6 +289,13 @@ class Crystal::Call
       attach_subclass_observer instance_type.base_type
     end
 
+    all_matches = matches.matches
+    if all_matches && all_matches.any?
+      all_matches.each do |match|
+        # puts "#{matches.owner},#{def_name},#{match.arg_types}"
+      end
+    end
+
     instantiate matches, owner, self_type, with_literals
   end
 
@@ -325,7 +333,7 @@ class Crystal::Call
         matches = owner.lookup_matches signature
       end
     else
-      matches = owner.lookup_matches signature
+      matches = owner.lookup_matches signature # OWNER: Typewriter::Person
     end
 
     matches
@@ -415,9 +423,15 @@ class Crystal::Call
         end
       end
 
+      args = /\[([\w_?!]+)\s*:\s*([\w\s|]+)\]/.match(typed_def.args.to_s)
+      # puts "#{matches.owner},#{typed_def.name},#{args},#{typed_def.args.map(&.name)}#{typed_def.args.map(&.external_name)}"
+      if args
+        puts "#{matches.owner},#{typed_def.name},#{args[2]}"
+      end
       typed_defs << typed_def
     end
 
+    # puts typed_defs.map(&.return_type)
     typed_defs
   end
 

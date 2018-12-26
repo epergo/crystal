@@ -459,6 +459,9 @@ module Crystal
     end
 
     def restrict(other : Arg, context)
+      # if other.to_s == "param1"
+      #   puts "----- restrict #{other.type?} #{other.restriction}"
+      # end
       restrict (other.type? || other.restriction), context
     end
 

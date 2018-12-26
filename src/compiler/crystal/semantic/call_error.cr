@@ -47,6 +47,7 @@ class Crystal::Call
       defs = owner.lookup_defs_without_parents(def_name)
     else
       defs = owner.lookup_defs(def_name)
+      # puts defs
     end
 
     # Another special case: initialize is only looked up one level,
